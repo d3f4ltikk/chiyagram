@@ -1,386 +1,45 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>чияграмм / чат с друзьями</title>
+    <meta charset="utf-8">
+    <title>чияграмм</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(145deg, #c9d9d0 0%, #a6c1b2 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 12px;
-        }
-
-        #chiyagram-container {
-            width: 100%;
-            max-width: 500px;
-            height: 90vh;
-            background: #ffffff;
-            border-radius: 36px;
-            box-shadow: 0 25px 50px -8px rgba(20, 60, 50, 0.4);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Экран входа */
-        .login-screen {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        .login-logo {
-            font-size: 56px;
-            font-weight: 700;
-            color: #0b4635;
-            margin-bottom: 20px;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 16px 22px;
-            border: 2px solid #bfdfd2;
-            border-radius: 60px;
-            font-size: 16px;
-            margin: 8px 0;
-            outline: none;
-        }
-
-        .login-input:focus {
-            border-color: #248f73;
-        }
-
-        .login-btn {
-            background: #1c6d58;
-            color: white;
-            border: none;
-            padding: 16px 30px;
-            border-radius: 60px;
-            font-size: 16px;
-            font-weight: 600;
-            width: 100%;
-            margin-top: 18px;
-            cursor: pointer;
-        }
-
-        .login-btn:hover {
-            background: #248f73;
-        }
-
-        .login-error {
-            color: #c74e4e;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-
-        /* Хедер */
-        .header {
-            background: #e6f3ed;
-            padding: 20px 24px;
-            border-bottom: 1px solid #cfe6dc;
-        }
-
-        .header h1 {
-            font-size: 26px;
-            color: #0b4635;
-        }
-
-        /* Профиль */
-        .user-profile {
-            padding: 16px 24px;
-            background: #f0fbf7;
-            border-bottom: 1px solid #c6e0d6;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .avatar {
-            width: 52px;
-            height: 52px;
-            background: #1e6b58;
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 26px;
-            font-weight: 500;
-        }
-
-        .fixed-username {
-            font-size: 20px;
-            font-weight: 700;
-            color: #0a352b;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .admin-badge {
-            background: #1e6b58;
-            color: white;
-            width: 22px;
-            height: 22px;
-            border-radius: 22px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
-        /* Сообщения */
-        .messages-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px 20px;
-            background: #f5f5f5;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .message {
-            max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            word-break: break-word;
-        }
-
-        .message.my-message {
-            align-self: flex-end;
-            background: #dcf8c6;
-            border-bottom-right-radius: 4px;
-            color: #000;
-        }
-
-        .message.other-message {
-            align-self: flex-start;
-            background: #ffffff;
-            border-bottom-left-radius: 4px;
-            color: #000;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .message.deleted-message {
-            opacity: 0.5;
-            background: #e0e0e0;
-            font-style: italic;
-        }
-
-        .message-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: #1e5e4b;
-        }
-
-        .sender-name {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .admin-verified {
-            background: #1e6b58;
-            color: white;
-            width: 16px;
-            height: 16px;
-            border-radius: 16px;
-            font-size: 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .message-time {
-            opacity: 0.7;
-            font-size: 10px;
-        }
-
-        .message-text {
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 8px;
-        }
-
-        .delete-message-btn {
-            background: none;
-            border: none;
-            color: #c45a4a;
-            font-size: 16px;
-            margin-left: 8px;
-            cursor: pointer;
-        }
-
-        .reactions-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-top: 4px;
-        }
-
-        .reaction-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            background: rgba(255,255,255,0.9);
-            border: 1px solid #bfddd2;
-            border-radius: 20px;
-            padding: 2px 8px;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .reaction-item.active {
-            background: #b8e6d6;
-        }
-
-        .add-reaction-btn {
-            border: 1px dashed #bfddd2;
-            border-radius: 20px;
-            width: 28px;
-            height: 28px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        /* Ввод */
-        .message-form {
-            padding: 16px 20px;
-            background: #f3fcf8;
-            border-top: 1px solid #c6e2d7;
-            display: flex;
-            gap: 10px;
-        }
-
-        #message-input {
-            flex: 1;
-            padding: 14px 18px;
-            border: 1.5px solid #c0ddd2;
-            border-radius: 40px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        #message-input:focus {
-            border-color: #248f73;
-        }
-
-        #send-button {
-            width: 48px;
-            height: 48px;
-            border: none;
-            border-radius: 48px;
-            background: #1e6b58;
-            color: white;
-            font-size: 22px;
-            cursor: pointer;
-        }
-
-        .stats {
-            padding: 8px 22px;
-            background: #e3f3ec;
-            border-top: 1px solid #c6e2d7;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #215b4c;
-            font-weight: 600;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal.active { display: flex; }
-        .modal-content img { max-width: 90%; max-height: 90%; border-radius: 24px; }
-        .modal-close { position: absolute; top: 30px; right: 40px; color: white; font-size: 50px; cursor: pointer; }
+        body { font-family: Arial; margin: 0; padding: 20px; background: #e0f2e9; }
+        #login-screen { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 30px; }
+        #chat-main { max-width: 500px; margin: 0 auto; background: white; border-radius: 30px; overflow: hidden; display: none; }
+        input, button { width: 100%; padding: 15px; margin: 8px 0; border-radius: 30px; border: 1px solid #ccc; font-size: 16px; }
+        button { background: #1e6b58; color: white; border: none; cursor: pointer; }
+        .message { padding: 10px; margin: 5px; border-radius: 10px; }
+        .my-message { background: #dcf8c6; text-align: right; }
+        .other-message { background: #f0f0f0; }
+        #messages-area { height: 400px; overflow-y: auto; padding: 10px; background: #f9f9f9; }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Firebase SDK (правильные ссылки для браузера) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
+    <!-- ПРАВИЛЬНЫЕ ссылки на Firebase для браузера -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
-    <div id="chiyagram-container">
-        <!-- Экран логина -->
-        <div id="login-screen" class="login-screen">
-            <div class="login-logo">чияграмм</div>
-            <input type="text" id="login-username" class="login-input" placeholder="логин" value="Гость">
-            <input type="password" id="login-password" class="login-input" placeholder="пароль">
-            <button class="login-btn" id="login-btn">войти</button>
-            <div id="login-error" class="login-error"></div>
-        </div>
-
-        <!-- Основной чат -->
-        <div id="chat-main" style="display: none; flex-direction: column; height: 100%;">
-            <div class="header">
-                <h1>чияграмм</h1>
-            </div>
-
-            <div class="user-profile">
-                <div class="avatar" id="avatar">Г</div>
-                <div class="user-info">
-                    <label>вы вошли как</label>
-                    <div class="fixed-username" id="fixed-username">
-                        Гость
-                        <span class="admin-badge" id="profile-admin-badge" style="display: none;">✓</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="messages-area" id="messages-area">
-                <div style="text-align:center; color:#248f73; padding:8px;">✧ чияграмм ✧</div>
-            </div>
-
-            <form class="message-form" id="message-form">
-                <button type="button" class="attach-btn" style="background:none; border:none; font-size:26px; color:#1e6b58;" onclick="document.getElementById('file-input').click()">+</button>
-                <input type="file" id="file-input" style="display: none" multiple>
-                <input type="text" id="message-input" placeholder="сообщение...">
-                <button type="submit" id="send-button">→</button>
-            </form>
-
-            <div class="stats">
-                <span id="users-count">👥 в чате: 1</span>
-                <span id="messages-count">💬 сообщений: 0</span>
-            </div>
-        </div>
+    <div id="login-screen">
+        <h1 style="text-align:center; color:#1e6b58;">чияграмм</h1>
+        <input type="text" id="login-username" placeholder="логин" value="Гость">
+        <input type="password" id="login-password" placeholder="пароль">
+        <button id="login-btn">войти</button>
+        <div id="login-error" style="color:red; text-align:center;"></div>
     </div>
 
-    <div class="modal" id="image-modal">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <div class="modal-content"><img id="modal-image" src=""></div>
+    <div id="chat-main">
+        <div style="padding:15px; background:#e6f3ed;">
+            <h2 style="margin:0;">чияграмм</h2>
+        </div>
+        <div id="messages-area"></div>
+        <form id="message-form" style="padding:15px; display:flex;">
+            <input type="text" id="message-input" style="flex:1; margin-right:10px;" placeholder="сообщение">
+            <button type="submit" style="width:auto;">→</button>
+        </form>
     </div>
 
     <script>
-        // ВАШИ КЛЮЧИ FIREBASE
+        // ВАШИ КЛЮЧИ
         const firebaseConfig = {
             apiKey: "AIzaSyC6SDTi2p5cJ-dB7CsoWoOHOIEKr6Slv3w",
             authDomain: "chiyagram-chat.firebaseapp.com",
@@ -391,391 +50,79 @@
             appId: "1:310131804413:web:9d010ff786771a67aa9694"
         };
 
-        // Инициализация Firebase
+        // Инициализация
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const messagesRef = database.ref('messages');
-        const usersRef = database.ref('users');
 
-        // Данные пользователя
-        let currentUser = {
-            id: 'user_' + Date.now(),
-            name: 'Гость',
-            isAdmin: false
-        };
+        console.log("Firebase OK");
 
-        const ADMINS = {
-            'Разработчик': '79205393979',
-            'Президент': 'president2024'
-        };
-
-        // DOM элементы
-        const messagesArea = document.getElementById('messages-area');
+        // Элементы
         const loginScreen = document.getElementById('login-screen');
         const chatMain = document.getElementById('chat-main');
         const loginBtn = document.getElementById('login-btn');
-        const loginUsername = document.getElementById('login-username');
-        const loginPassword = document.getElementById('login-password');
+        const username = document.getElementById('login-username');
+        const password = document.getElementById('login-password');
         const loginError = document.getElementById('login-error');
-        const fixedUsernameSpan = document.getElementById('fixed-username');
-        const profileAdminBadge = document.getElementById('profile-admin-badge');
-        const avatarDiv = document.getElementById('avatar');
+        const messagesArea = document.getElementById('messages-area');
         const messageForm = document.getElementById('message-form');
         const messageInput = document.getElementById('message-input');
-        const fileInput = document.getElementById('file-input');
-        const messagesCountSpan = document.getElementById('messages-count');
-        const usersCountSpan = document.getElementById('users-count');
-        const modal = document.getElementById('image-modal');
-        const modalImage = document.getElementById('modal-image');
 
-        // Проверка подключения к Firebase
-        console.log('Firebase подключен:', firebase.app().name);
+        let currentUser = { name: 'Гость', id: 'user_' + Date.now() };
 
-        // Слушаем новые сообщения
+        // Кнопка входа
+        loginBtn.onclick = function() {
+            console.log("Кнопка нажата!");
+            loginError.textContent = "";
+            
+            currentUser.name = username.value || 'Гость';
+            
+            // Показываем чат
+            loginScreen.style.display = 'none';
+            chatMain.style.display = 'block';
+            
+            // Добавляем системное сообщение
+            const sysMsg = document.createElement('div');
+            sysMsg.style.textAlign = 'center';
+            sysMsg.style.color = '#1e6b58';
+            sysMsg.style.padding = '10px';
+            sysMsg.textContent = '✨ ' + currentUser.name + ' присоединился к чату ✨';
+            messagesArea.appendChild(sysMsg);
+            
+            // Сохраняем в Firebase
+            messagesRef.push({
+                sender: 'Система',
+                text: currentUser.name + ' присоединился',
+                time: new Date().toLocaleTimeString(),
+                system: true
+            });
+        };
+
+        // Слушаем сообщения из Firebase
         messagesRef.on('child_added', (snapshot) => {
             const msg = snapshot.val();
-            msg.id = snapshot.key;
-            renderMessage(msg, msg.senderId === currentUser.id);
-            updateCounts();
-        });
-
-        // Слушаем изменения сообщений
-        messagesRef.on('child_changed', () => refreshMessages());
-        messagesRef.on('child_removed', () => refreshMessages());
-
-        // Обновление списка пользователей
-        usersRef.on('value', (snapshot) => {
-            const users = snapshot.val() || {};
-            const count = Object.keys(users).length;
-            usersCountSpan.textContent = `👥 в чате: ${count}`;
-        });
-
-        function refreshMessages() {
-            messagesArea.innerHTML = '<div style="text-align:center; color:#248f73; padding:8px;">✧ чияграмм ✧</div>';
-            messagesRef.once('value').then((snapshot) => {
-                const msgs = snapshot.val() || {};
-                Object.values(msgs).forEach(msg => {
-                    renderMessage(msg, msg.senderId === currentUser.id);
-                });
-            });
-        }
-
-        function renderMessage(msg, isOwn) {
-            if (!msg) return;
-            
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${isOwn ? 'my-message' : 'other-message'} ${msg.deleted ? 'deleted-message' : ''}`;
-            msgDiv.dataset.id = msg.id;
-
-            const header = document.createElement('div');
-            header.className = 'message-header';
-            
-            const senderSpan = document.createElement('span');
-            senderSpan.className = 'sender-name';
-            senderSpan.textContent = msg.sender || 'Неизвестно';
-            
-            if (msg.sender === 'Разработчик' || msg.sender === 'Президент') {
-                const verifiedIcon = document.createElement('span');
-                verifiedIcon.className = 'admin-verified';
-                verifiedIcon.textContent = '✓';
-                senderSpan.appendChild(verifiedIcon);
+            if (!msg.system) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'message ' + (msg.sender === currentUser.name ? 'my-message' : 'other-message');
+                msgDiv.innerHTML = '<small>' + msg.sender + ' ' + msg.time + '</small><br>' + msg.text;
+                messagesArea.appendChild(msgDiv);
+                messagesArea.scrollTop = messagesArea.scrollHeight;
             }
-            
-            if (msg.deleted) {
-                const deleteBadge = document.createElement('span');
-                deleteBadge.style.background = '#c0392b';
-                deleteBadge.style.color = 'white';
-                deleteBadge.style.padding = '2px 6px';
-                deleteBadge.style.borderRadius = '12px';
-                deleteBadge.style.fontSize = '10px';
-                deleteBadge.style.marginLeft = '8px';
-                deleteBadge.textContent = 'удалено';
-                senderSpan.appendChild(deleteBadge);
-            }
-
-            const timeSpan = document.createElement('span');
-            timeSpan.className = 'message-time';
-            timeSpan.textContent = msg.time || '';
-
-            header.appendChild(senderSpan);
-            header.appendChild(timeSpan);
-            msgDiv.appendChild(header);
-
-            if (msg.deleted) {
-                const deletedText = document.createElement('div');
-                deletedText.className = 'message-text';
-                deletedText.textContent = currentUser.isAdmin ? msg.text : '[сообщение удалено]';
-                msgDiv.appendChild(deletedText);
-            } else {
-                if (msg.text) {
-                    const textDiv = document.createElement('div');
-                    textDiv.className = 'message-text';
-                    textDiv.textContent = msg.text;
-                    msgDiv.appendChild(textDiv);
-                }
-            }
-
-            // Реакции
-            if (!msg.deleted) {
-                if (!msg.reactions) msg.reactions = {};
-                
-                const reactionsDiv = document.createElement('div');
-                reactionsDiv.className = 'reactions-container';
-                
-                const availableEmojis = ['👍', '❤️', '😂', '😮', '😢', '🔥'];
-                
-                if (msg.reactions) {
-                    Object.entries(msg.reactions).forEach(([emoji, data]) => {
-                        if (availableEmojis.includes(emoji) && data && data.count > 0) {
-                            const reactionItem = document.createElement('span');
-                            reactionItem.className = `reaction-item ${data.users && data.users[currentUser.id] ? 'active' : ''}`;
-                            reactionItem.innerHTML = `<span class="reaction-emoji">${emoji}</span><span class="reaction-count">${data.count}</span>`;
-                            reactionItem.onclick = () => addReaction(msg.id, emoji);
-                            reactionsDiv.appendChild(reactionItem);
-                        }
-                    });
-                }
-                
-                const addBtn = document.createElement('span');
-                addBtn.className = 'add-reaction-btn';
-                addBtn.textContent = '+';
-                addBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    showReactionPicker(msg.id, addBtn);
-                };
-                reactionsDiv.appendChild(addBtn);
-                
-                msgDiv.appendChild(reactionsDiv);
-            }
-
-            // Кнопка удаления
-            if (!msg.deleted && (isOwn || currentUser.isAdmin)) {
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-message-btn';
-                deleteBtn.innerHTML = '✕';
-                deleteBtn.onclick = () => deleteMessage(msg.id);
-                header.appendChild(deleteBtn);
-            }
-
-            messagesArea.appendChild(msgDiv);
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
-
-        function showReactionPicker(messageId, btnElement) {
-            const oldPicker = document.getElementById('reaction-picker');
-            if (oldPicker) oldPicker.remove();
-
-            const picker = document.createElement('div');
-            picker.id = 'reaction-picker';
-            picker.style.position = 'fixed';
-            picker.style.background = 'white';
-            picker.style.border = '1px solid #bfddd2';
-            picker.style.borderRadius = '30px';
-            picker.style.padding = '8px 12px';
-            picker.style.display = 'flex';
-            picker.style.gap = '10px';
-            picker.style.zIndex = '1000';
-            picker.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-            
-            const emojis = ['👍', '❤️', '😂', '😮', '😢', '🔥'];
-            emojis.forEach(emoji => {
-                const emojiBtn = document.createElement('span');
-                emojiBtn.style.fontSize = '22px';
-                emojiBtn.style.cursor = 'pointer';
-                emojiBtn.style.padding = '2px 4px';
-                emojiBtn.textContent = emoji;
-                emojiBtn.onclick = () => {
-                    addReaction(messageId, emoji);
-                    picker.remove();
-                };
-                picker.appendChild(emojiBtn);
-            });
-            
-            const rect = btnElement.getBoundingClientRect();
-            picker.style.top = (rect.top - 50) + 'px';
-            picker.style.left = rect.left + 'px';
-            
-            document.body.appendChild(picker);
-            
-            setTimeout(() => {
-                document.addEventListener('click', function closePicker(e) {
-                    if (!picker.contains(e.target) && e.target !== btnElement) {
-                        picker.remove();
-                        document.removeEventListener('click', closePicker);
-                    }
-                });
-            }, 100);
-        }
-
-        function addReaction(messageId, emoji) {
-            messagesRef.child(messageId).once('value', (snapshot) => {
-                const msg = snapshot.val();
-                if (!msg || msg.deleted) return;
-                
-                if (!msg.reactions) msg.reactions = {};
-                if (!msg.reactions[emoji]) {
-                    msg.reactions[emoji] = { count: 0, users: {} };
-                }
-                
-                const userId = currentUser.id;
-                const reactionData = msg.reactions[emoji];
-                
-                if (reactionData.users[userId]) {
-                    reactionData.count--;
-                    delete reactionData.users[userId];
-                    if (reactionData.count <= 0) {
-                        delete msg.reactions[emoji];
-                    }
-                } else {
-                    Object.keys(msg.reactions).forEach(key => {
-                        if (msg.reactions[key].users[userId]) {
-                            msg.reactions[key].count--;
-                            delete msg.reactions[key].users[userId];
-                            if (msg.reactions[key].count <= 0) {
-                                delete msg.reactions[key];
-                            }
-                        }
-                    });
-                    
-                    reactionData.count = (reactionData.count || 0) + 1;
-                    reactionData.users[userId] = true;
-                }
-                
-                messagesRef.child(messageId).update({ reactions: msg.reactions });
-            });
-        }
-
-        function deleteMessage(messageId) {
-            messagesRef.child(messageId).once('value', (snapshot) => {
-                const msg = snapshot.val();
-                if (!msg) return;
-                
-                if (currentUser.isAdmin) {
-                    if (confirm('Удалить сообщение полностью?')) {
-                        messagesRef.child(messageId).remove();
-                    }
-                } else if (msg.senderId === currentUser.id) {
-                    if (confirm('Удалить ваше сообщение?')) {
-                        messagesRef.child(messageId).update({ deleted: true });
-                    }
-                }
-            });
-        }
-
-        function addSystemMessage(text) {
-            const sysDiv = document.createElement('div');
-            sysDiv.style.textAlign = 'center';
-            sysDiv.style.color = '#1e6b58';
-            sysDiv.style.padding = '6px';
-            sysDiv.style.fontSize = '12px';
-            sysDiv.textContent = text;
-            messagesArea.appendChild(sysDiv);
-        }
-
-        // Модалка
-        window.openModal = function(src) {
-            modalImage.src = src;
-            modal.classList.add('active');
-        };
-        window.closeModal = function() {
-            modal.classList.remove('active');
-            modalImage.src = '';
-        };
-        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
-
-        // Вход
-        function doLogin() {
-            console.log('Клик по кнопке входа');
-            const username = loginUsername.value.trim();
-            const password = loginPassword.value.trim();
-
-            console.log('Логин:', username, 'Пароль:', password);
-
-            if (ADMINS[username] && ADMINS[username] === password) {
-                currentUser = {
-                    id: 'admin_' + Date.now(),
-                    name: username,
-                    isAdmin: true
-                };
-            } else {
-                if (ADMINS[username]) {
-                    loginError.textContent = 'неверный пароль';
-                    return;
-                }
-                currentUser = {
-                    id: 'user_' + Date.now() + Math.random(),
-                    name: username || 'Гость',
-                    isAdmin: false
-                };
-            }
-
-            console.log('Текущий пользователь:', currentUser);
-
-            fixedUsernameSpan.innerHTML = currentUser.name;
-            if (currentUser.isAdmin) {
-                const badge = document.createElement('span');
-                badge.className = 'admin-badge';
-                badge.textContent = '✓';
-                fixedUsernameSpan.appendChild(badge);
-                profileAdminBadge.style.display = 'inline-flex';
-            }
-            
-            avatarDiv.textContent = currentUser.name.charAt(0).toUpperCase();
-            loginScreen.style.display = 'none';
-            chatMain.style.display = 'flex';
-
-            // Добавляем пользователя
-            usersRef.child(currentUser.id).set({
-                name: currentUser.name,
-                lastSeen: Date.now()
-            });
-
-            // Удаляем при закрытии
-            window.addEventListener('beforeunload', () => {
-                usersRef.child(currentUser.id).remove();
-            });
-
-            addSystemMessage(`✨ ${currentUser.name} присоединился к чату`);
-        }
-
-        // Вешаем обработчики
-        loginBtn.addEventListener('click', doLogin);
-        loginPassword.addEventListener('keypress', (e) => { 
-            if(e.key === 'Enter') doLogin(); 
         });
 
         // Отправка сообщения
-        messageForm.addEventListener('submit', (e) => {
+        messageForm.onsubmit = function(e) {
             e.preventDefault();
             const text = messageInput.value.trim();
-            
-            if (!text) return;
-
-            const msg = {
-                sender: currentUser.name,
-                senderId: currentUser.id,
-                text: text,
-                time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
-                reactions: {},
-                deleted: false
-            };
-            
-            messagesRef.push(msg);
-            messageInput.value = '';
-        });
-
-        function updateCounts() {
-            messagesRef.once('value').then((snapshot) => {
-                const count = snapshot.numChildren();
-                messagesCountSpan.textContent = `💬 сообщений: ${count}`;
-            });
-        }
-
-        // Начальное состояние
-        loginScreen.style.display = 'flex';
-        chatMain.style.display = 'none';
-
-        console.log('Скрипт загружен, ждем ввод');
+            if (text) {
+                messagesRef.push({
+                    sender: currentUser.name,
+                    text: text,
+                    time: new Date().toLocaleTimeString()
+                });
+                messageInput.value = '';
+            }
+        };
     </script>
 </body>
 </html>
