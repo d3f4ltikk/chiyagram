@@ -58,6 +58,11 @@
             border-radius: 60px;
             font-size: 16px;
             margin: 8px 0;
+            outline: none;
+        }
+
+        .login-input:focus {
+            border-color: #248f73;
         }
 
         .login-btn {
@@ -115,6 +120,7 @@
             justify-content: center;
             color: white;
             font-size: 26px;
+            font-weight: 500;
         }
 
         .fixed-username {
@@ -274,6 +280,11 @@
             border: 1.5px solid #c0ddd2;
             border-radius: 40px;
             font-size: 14px;
+            outline: none;
+        }
+
+        #message-input:focus {
+            border-color: #248f73;
         }
 
         #send-button {
@@ -369,9 +380,7 @@
     </div>
 
     <script>
-        // ==============================================
-        // ВАШИ КЛЮЧИ FIREBASE (вы их получили)
-        // ==============================================
+        // ВАШИ КЛЮЧИ FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyC6SDTi2p5cJ-dB7CsoWoOHOIEKr6Slv3w",
             authDomain: "chiyagram-chat.firebaseapp.com",
@@ -383,7 +392,7 @@
         };
 
         // Инициализация Firebase
-        const app = firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const messagesRef = database.ref('messages');
         const usersRef = database.ref('users');
@@ -418,6 +427,9 @@
         const usersCountSpan = document.getElementById('users-count');
         const modal = document.getElementById('image-modal');
         const modalImage = document.getElementById('modal-image');
+
+        // Проверка подключения к Firebase
+        console.log('Firebase подключен:', firebase.app().name);
 
         // Слушаем новые сообщения
         messagesRef.on('child_added', (snapshot) => {
@@ -460,7 +472,7 @@
             
             const senderSpan = document.createElement('span');
             senderSpan.className = 'sender-name';
-            senderSpan.textContent = msg.sender;
+            senderSpan.textContent = msg.sender || 'Неизвестно';
             
             if (msg.sender === 'Разработчик' || msg.sender === 'Президент') {
                 const verifiedIcon = document.createElement('span');
@@ -512,15 +524,17 @@
                 
                 const availableEmojis = ['👍', '❤️', '😂', '😮', '😢', '🔥'];
                 
-                Object.entries(msg.reactions).forEach(([emoji, data]) => {
-                    if (availableEmojis.includes(emoji) && data && data.count > 0) {
-                        const reactionItem = document.createElement('span');
-                        reactionItem.className = `reaction-item ${data.users && data.users[currentUser.id] ? 'active' : ''}`;
-                        reactionItem.innerHTML = `<span class="reaction-emoji">${emoji}</span><span class="reaction-count">${data.count}</span>`;
-                        reactionItem.onclick = () => addReaction(msg.id, emoji);
-                        reactionsDiv.appendChild(reactionItem);
-                    }
-                });
+                if (msg.reactions) {
+                    Object.entries(msg.reactions).forEach(([emoji, data]) => {
+                        if (availableEmojis.includes(emoji) && data && data.count > 0) {
+                            const reactionItem = document.createElement('span');
+                            reactionItem.className = `reaction-item ${data.users && data.users[currentUser.id] ? 'active' : ''}`;
+                            reactionItem.innerHTML = `<span class="reaction-emoji">${emoji}</span><span class="reaction-count">${data.count}</span>`;
+                            reactionItem.onclick = () => addReaction(msg.id, emoji);
+                            reactionsDiv.appendChild(reactionItem);
+                        }
+                    });
+                }
                 
                 const addBtn = document.createElement('span');
                 addBtn.className = 'add-reaction-btn';
@@ -671,8 +685,11 @@
 
         // Вход
         function doLogin() {
+            console.log('Клик по кнопке входа');
             const username = loginUsername.value.trim();
             const password = loginPassword.value.trim();
+
+            console.log('Логин:', username, 'Пароль:', password);
 
             if (ADMINS[username] && ADMINS[username] === password) {
                 currentUser = {
@@ -691,6 +708,8 @@
                     isAdmin: false
                 };
             }
+
+            console.log('Текущий пользователь:', currentUser);
 
             fixedUsernameSpan.innerHTML = currentUser.name;
             if (currentUser.isAdmin) {
@@ -719,8 +738,11 @@
             addSystemMessage(`✨ ${currentUser.name} присоединился к чату`);
         }
 
+        // Вешаем обработчики
         loginBtn.addEventListener('click', doLogin);
-        loginPassword.addEventListener('keypress', (e) => { if(e.key === 'Enter') doLogin(); });
+        loginPassword.addEventListener('keypress', (e) => { 
+            if(e.key === 'Enter') doLogin(); 
+        });
 
         // Отправка сообщения
         messageForm.addEventListener('submit', (e) => {
@@ -749,8 +771,11 @@
             });
         }
 
+        // Начальное состояние
         loginScreen.style.display = 'flex';
         chatMain.style.display = 'none';
+
+        console.log('Скрипт загружен, ждем ввод');
     </script>
 </body>
 </html>
